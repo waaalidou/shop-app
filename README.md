@@ -1,10 +1,17 @@
-# shop-app-with-provider
-- Simple shopApp UI i created while learning flutter to practice about state managment -provider- 
-## Current Features 
-- Main Screen has the products (dummy data currently) 
-- Add Favourite products 
-- Filters products between all products and favourite - Used **Provider** package as state managmentma
+# Simple Shop App UI with Flutter 🛍️
 
-## Required Packages
-- Provider 
-### Any pull request, changes, remarks is very welcomed and thanked !
+This is a simple shop app UI built with Flutter, designed to showcase my learning experience with Flutter and state management using Provider package.
+
+## 🚀 Features
+
+- The main screen shows all products available for purchase 📦
+- Users can add their favorite products by clicking the heart icon, which will be saved in the favorites section ❤️
+- Users can filter products between all and favorite only to show 🔍
+
+## 📦 Required Packages
+
+- Provider
+
+## ❤️ Contributing
+
+All contributions, pull requests, and feedback are welcomed and highly appreciated. Let's make this app more amazing together! 😊
