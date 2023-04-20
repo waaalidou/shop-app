@@ -1,16 +1,17 @@
-# shop_app
+# Simple Shop App UI with Flutter 🛍️
 
-A new Flutter project.
+This is a simple shop app UI built with Flutter, designed to showcase my learning experience with Flutter and state management using Provider package.
 
-## Getting Started
+## 🚀 Features
 
-This project is a starting point for a Flutter application.
+- The main screen shows all products available for purchase 📦
+- Users can add their favorite products by clicking the heart icon, which will be saved in the favorites section ❤️
+- Users can filter products between all and favorite only to show 🔍
 
-A few resources to get you started if this is your first Flutter project:
+## 📦 Required Packages
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+- Provider
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## ❤️ Contributing
+
+All contributions, pull requests, and feedback are welcomed and highly appreciated. Let's make this app more amazing together! 😊
