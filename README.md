@@ -9,11 +9,14 @@ This is a simple shop app UI built with Flutter, designed to showcase my learnin
 - Users can filter products between all and favorite only to show 🔍
 - Add products to cart 
 - Place Orders
+- Add/Edit/Delete Products
+- firebase as backend
 
 ## 📦 Required Packages
 
 - Provider
 - intl 
+- http
 
 ## ❤️ Contributing
 
