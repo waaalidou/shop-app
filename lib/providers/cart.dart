@@ -33,12 +33,12 @@ class Cart with ChangeNotifier {
   }
 
   void addCartItem(
-    String productId,
+    String? productId,
     double price,
     String title,
   ) {
     _items.update(
-      productId,
+      productId as String,
       (existingCartItem) => CartItem(
         id: existingCartItem.id,
         title: existingCartItem.title,
@@ -60,13 +60,13 @@ class Cart with ChangeNotifier {
     notifyListeners();
   }
 
-  void removeSingleItem(String productId) {
+  void removeSingleItem(String? productId) {
     if (!_items.containsKey(productId)) {
       return;
     }
     if (_items[productId]!.quantity > 1) {
       _items.update(
-          productId,
+          productId as String,
           (existingCartItem) => CartItem(
                 id: existingCartItem.id,
                 title: existingCartItem.title,

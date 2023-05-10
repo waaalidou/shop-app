@@ -6,7 +6,7 @@ import '../screens/add_product_screen.dart';
 
 class UserProductItem extends StatelessWidget {
   final String title;
-  final String id;
+  final String? id;
   final String imageUrl;
   const UserProductItem({
     super.key,
@@ -34,7 +34,7 @@ class UserProductItem extends StatelessWidget {
               color: Theme.of(context).colorScheme.primary,
             ),
             IconButton(
-              onPressed: () => Provider.of<Products>(context, listen: false).deleteProduct(id),
+              onPressed: () => Provider.of<Products>(context, listen: false).deleteProduct(id!),
               icon: const Icon(Icons.delete),
               color: Theme.of(context).colorScheme.error,
             ),
