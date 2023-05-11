@@ -12,6 +12,7 @@ class ProductItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
     final singleProductData = Provider.of<Product>(context, listen: false);
     final cartContainer = Provider.of<Cart>(context, listen: false);
     return ClipRRect(
@@ -21,7 +22,17 @@ class ProductItem extends StatelessWidget {
           backgroundColor: Colors.black87,
           leading: Consumer<Product>(
             builder: (context, product, _) => IconButton(
-              onPressed: () => product.toggleFavoriteStatus(),
+              onPressed: () async {
+                try {
+                   product.toggleFavoriteStatus();
+                } catch (_) {
+                  scaffoldMessenger.showSnackBar(
+                    const SnackBar(
+                      content: Text("Upadate failed"),
+                    ),
+                  );
+                }
+              },
               icon: Icon(
                 product.isFavorite
                     ? Icons.favorite
