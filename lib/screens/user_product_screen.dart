@@ -30,17 +30,22 @@ class UserProductScreen extends StatelessWidget {
         ],
       ),
       drawer: const AppDrawer(),
-      body: Consumer<Products>(
-        builder: (context, product, _) => Padding(
-          padding: const EdgeInsets.all(8),
-          child: ListView.separated(
-            itemBuilder: (ctx, index) => UserProductItem(
-              id:  product.items[index].id,
-              title: product.items[index].title,
-              imageUrl: product.items[index].imageUrl,
+      body: RefreshIndicator(
+        onRefresh: () {
+          return Provider.of<Products>(context, listen: false).fetchProducts();
+        },
+        child: Consumer<Products>(
+          builder: (context, product, _) => Padding(
+            padding: const EdgeInsets.all(8),
+            child: ListView.separated(
+              itemBuilder: (ctx, index) => UserProductItem(
+                id:  product.items[index].id,
+                title: product.items[index].title,
+                imageUrl: product.items[index].imageUrl,
+              ),
+              separatorBuilder: (context, index) => const Divider(),
+              itemCount: product.items.length,
             ),
-            separatorBuilder: (context, index) => const Divider(),
-            itemCount: product.items.length,
           ),
         ),
       ),

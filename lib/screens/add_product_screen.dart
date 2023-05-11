@@ -93,38 +93,39 @@ class _EditProductScreenState extends State<EditProductScreen> {
     setState(() {
       _isLoading = true;
     });
-    if (_editedProduct.id!.isNotEmpty) {
-      Provider.of<Products>(context, listen: false)
-          .updateProduct(_editedProduct.id, _editedProduct);
+    try {
+      if (_editedProduct.id!.isNotEmpty) {
+        await Provider.of<Products>(context, listen: false)
+            .updateProduct(_editedProduct.id, _editedProduct);
+      } else {
+        try {
+          await Provider.of<Products>(context, listen: false)
+              .addProduct(_editedProduct);
+        } catch (error) {
+          await showDialog<void>(
+            context: context,
+            builder: (ctx) {
+              return AlertDialog(
+                title: const Text("An error occured"),
+                content: const Text('Something went wrong'),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.of(ctx).pop(),
+                    child: const Text("Close"),
+                  ),
+                ],
+              );
+            },
+          );
+        }
+      }
+    } catch (e) {
+      rethrow;
+    } finally {
+      Navigator.of(context).pop();
       setState(() {
         _isLoading = false;
       });
-    } else {
-      try {
-        await Provider.of<Products>(context, listen: false)
-            .addProduct(_editedProduct);
-      } catch (error) {
-         await showDialog<void>(
-          context: context,
-          builder: (ctx) {
-            return AlertDialog(
-              title: const Text("An error occured"),
-              content: const Text('Something went wrong'),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.of(ctx).pop(),
-                  child: const Text("Close"),
-                ),
-              ],
-            );
-          },
-        );
-      } finally {
-        setState(() {
-          _isLoading = false;
-        });
-        Navigator.of(context).pop();
-      }
     }
   }
 
