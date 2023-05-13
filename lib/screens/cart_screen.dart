@@ -12,7 +12,7 @@ class CartScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cart = Provider.of<Cart>(context);
-
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text("Cart"),
@@ -43,16 +43,7 @@ class CartScreen extends StatelessWidget {
                     ),
                     backgroundColor: Theme.of(context).colorScheme.primary,
                   ),
-                  TextButton(
-                    onPressed: () {
-                      Provider.of<Orders>(context, listen: false).addOrder(
-                        cart.items.values.toList(),
-                        cart.totalAmount,
-                      );
-                      cart.clearCart();
-                    },
-                    child: const Text("Place Order"),
-                  ),
+                  PlaceOrderButton(cart: cart, scaffoldMessenger: scaffoldMessenger),
                 ],
               ),
             ),
@@ -71,6 +62,55 @@ class CartScreen extends StatelessWidget {
           )
         ],
       ),
+    );
+  }
+}
+
+class PlaceOrderButton extends StatefulWidget {
+  const PlaceOrderButton({
+    super.key,
+    required this.cart,
+    required this.scaffoldMessenger,
+  });
+
+  final Cart cart;
+  final ScaffoldMessengerState scaffoldMessenger;
+
+  @override
+  State<PlaceOrderButton> createState() => _PlaceOrderButtonState();
+}
+
+class _PlaceOrderButtonState extends State<PlaceOrderButton> {
+  bool _isLoading = false;
+  @override
+  Widget build(BuildContext context) {
+    return TextButton(
+      onPressed: (widget.cart.totalAmount <= 0 || _isLoading)
+          ? null
+          : () async {
+            setState(() {
+              _isLoading = true;
+            });
+              try {
+                await Provider.of<Orders>(context, listen: false)
+                    .addOrder(
+                  widget.cart.items.values.toList(),
+                  widget.cart.totalAmount,
+                ).then((value){
+                  setState(() {
+                    _isLoading = false;
+                  });
+                });
+                widget.cart.clearCart();
+              } catch (e) {
+                widget.scaffoldMessenger.showSnackBar(
+                  const SnackBar(
+                    content: Text('Adding Orders failed!'),
+                  ),
+                );
+              }
+            },
+      child: const Text("Place Order"),
     );
   }
 }
