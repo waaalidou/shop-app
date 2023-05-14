@@ -1,6 +1,11 @@
+// ignore_for_file: prefer_final_fields
+
+import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shop_app/providers/auth.dart';
 
 enum AuthMode { signup, login }
 
@@ -91,32 +96,75 @@ class AuthCard extends StatefulWidget {
 }
 
 class AuthCardState extends State<AuthCard> {
+  final emailController = TextEditingController();
+  final confirmPasswordController = TextEditingController();
+  final _passwordController = TextEditingController();
+
   final GlobalKey<FormState> _formKey = GlobalKey();
   AuthMode _authMode = AuthMode.login;
   Map<String?, String> _authData = {
     'email': '',
     'password': '',
   };
-  var _isLoading = false;
-  final _passwordController = TextEditingController();
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('An Error Occurred!'),
+        content: Text(message),
+        actions: <Widget>[
+          TextButton(
+            child: const Text('Okay'),
+            onPressed: () {
+              Navigator.of(ctx).pop();
+            },
+          )
+        ],
+      ),
+    );
+  }
 
-  void _submit() {
+  void _submit() async {
     if (!_formKey.currentState!.validate()) {
       // Invalid!
       return;
     }
     _formKey.currentState!.save();
-    setState(() {
-      _isLoading = true;
-    });
-    if (_authMode == AuthMode.login) {
-      // Log user in
-    } else {
-      // Sign user up
+
+    try {
+      if (_authMode == AuthMode.login) {
+        await Provider.of<Authentication>(context, listen: false).signIn(
+          _authData['email'] as String,
+          _authData['password'] as String,
+        );
+      } else {
+        await Provider.of<Authentication>(context, listen: false).signUp(
+          _authData['email'] as String,
+          _authData['password'] as String,
+        );
+      }
+    } on HttpException catch (error) {
+      late String errorMessage;
+      if (error.toString().contains('EMAIL_EXISTS')) {
+        errorMessage = 'This email address is already in use.';
+      } else if (error.toString().contains('INVALID_EMAIL')) {
+        errorMessage = 'This is not a valid email address';
+      } else if (error.toString().contains('WEAK_PASSWORD')) {
+        errorMessage = 'This password is too weak.';
+      } else if (error.toString().contains('EMAIL_NOT_FOUND')) {
+        errorMessage = 'Could not find a user with that email.';
+      } else if (error.toString().contains('INVALID_PASSWORD')) {
+        errorMessage = 'Invalid password.';
+      }
+      _showErrorDialog(errorMessage);
+    } catch (e) {
+      const errorMessage = 'Sorry Couldn\'t authenticate try again later';
+      _showErrorDialog(errorMessage);
     }
-    setState(() {
-      _isLoading = false;
-    });
+
+    emailController.clear();
+    _passwordController.clear();
+    confirmPasswordController.clear();
   }
 
   void _switchAuthMode() {
@@ -151,6 +199,7 @@ class AuthCardState extends State<AuthCard> {
             child: Column(
               children: <Widget>[
                 TextFormField(
+                  controller: emailController,
                   decoration: const InputDecoration(labelText: 'E-Mail'),
                   keyboardType: TextInputType.emailAddress,
                   validator: (value) {
@@ -179,6 +228,7 @@ class AuthCardState extends State<AuthCard> {
                 ),
                 if (_authMode == AuthMode.signup)
                   TextFormField(
+                    controller: confirmPasswordController,
                     enabled: _authMode == AuthMode.signup,
                     decoration:
                         const InputDecoration(labelText: 'Confirm Password'),
@@ -195,31 +245,28 @@ class AuthCardState extends State<AuthCard> {
                 const SizedBox(
                   height: 20,
                 ),
-                if (_isLoading)
-                  const CircularProgressIndicator()
-                else
-                  ElevatedButton(
-                    onPressed: _submit,
-                    style: ButtonStyle(
-                      padding: MaterialStateProperty.all(
-                        const EdgeInsets.symmetric(vertical: 8, horizontal: 30),
-                      ),
-                      shape: MaterialStateProperty.all(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                      ),
-                      textStyle: MaterialStateProperty.all(
-                        TextStyle(
-                            color: Theme.of(context)
-                                .primaryTextTheme
-                                .bodySmall!
-                                .color),
+                ElevatedButton(
+                  onPressed: _submit,
+                  style: ButtonStyle(
+                    padding: MaterialStateProperty.all(
+                      const EdgeInsets.symmetric(vertical: 8, horizontal: 30),
+                    ),
+                    shape: MaterialStateProperty.all(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
                       ),
                     ),
-                    child:
-                        Text(_authMode == AuthMode.login ? 'login' : 'SIGN UP'),
+                    textStyle: MaterialStateProperty.all(
+                      TextStyle(
+                          color: Theme.of(context)
+                              .primaryTextTheme
+                              .bodySmall!
+                              .color),
+                    ),
                   ),
+                  child:
+                      Text(_authMode == AuthMode.login ? 'login' : 'SIGN UP'),
+                ),
                 TextButton(
                   onPressed: _switchAuthMode,
                   style: ButtonStyle(
@@ -234,7 +281,7 @@ class AuthCardState extends State<AuthCard> {
                     ),
                   ),
                   child: Text(
-                      '${_authMode == AuthMode.login ? 'signup' : 'login'} INSTEAD'),
+                      '${_authMode == AuthMode.login ? 'SIGNUP' : 'LOGIN'} INSTEAD'),
                 ),
               ],
             ),
