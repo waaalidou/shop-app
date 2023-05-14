@@ -42,26 +42,26 @@ class AuthScreen extends StatelessWidget {
                   Flexible(
                     child: Container(
                       margin: const EdgeInsets.only(bottom: 20.0),
-                      padding:
-                          const EdgeInsets.symmetric(vertical: 8.0, horizontal: 94.0),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8.0, horizontal: 70.0),
                       transform: Matrix4.rotationZ(-8 * pi / 180)
-                        ..translate(-10.0),
+                        ..translate(-5.0),
                       // ..translate(-10.0),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20),
                         color: Colors.deepOrange.shade900,
                         boxShadow: const [
-                           BoxShadow(
+                          BoxShadow(
                             blurRadius: 8,
                             color: Colors.black26,
                             offset: Offset(0, 2),
                           )
                         ],
                       ),
-                      child: Text(
+                      child: const Text(
                         'MyShop',
                         style: TextStyle(
-                          color: Theme.of(context).colorScheme.secondary,
+                          color: Colors.white,
                           fontSize: 50,
                           fontFamily: 'Anton',
                           fontWeight: FontWeight.normal,
@@ -85,7 +85,6 @@ class AuthScreen extends StatelessWidget {
 
 class AuthCard extends StatefulWidget {
   const AuthCard({super.key});
-
 
   @override
   AuthCardState createState() => AuthCardState();
@@ -181,7 +180,8 @@ class AuthCardState extends State<AuthCard> {
                 if (_authMode == AuthMode.signup)
                   TextFormField(
                     enabled: _authMode == AuthMode.signup,
-                    decoration: const InputDecoration(labelText: 'Confirm Password'),
+                    decoration:
+                        const InputDecoration(labelText: 'Confirm Password'),
                     obscureText: true,
                     validator: _authMode == AuthMode.signup
                         ? (value) {
@@ -200,23 +200,41 @@ class AuthCardState extends State<AuthCard> {
                 else
                   ElevatedButton(
                     onPressed: _submit,
+                    style: ButtonStyle(
+                      padding: MaterialStateProperty.all(
+                        const EdgeInsets.symmetric(vertical: 8, horizontal: 30),
+                      ),
+                      shape: MaterialStateProperty.all(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                      ),
+                      textStyle: MaterialStateProperty.all(
+                        TextStyle(
+                            color: Theme.of(context)
+                                .primaryTextTheme
+                                .bodySmall!
+                                .color),
+                      ),
+                    ),
                     child:
                         Text(_authMode == AuthMode.login ? 'login' : 'SIGN UP'),
-                    // shape: RoundedRectangleBorder(
-                    //   borderRadius: BorderRadius.circular(30),
-                    // ),
-                    // padding:
-                    //     EdgeInsets.symmetric(horizontal: 30.0, vertical: 8.0),
-                    // color: Theme.of(context).primaryColor,
-                    // textColor: Theme.of(context).primaryTextTheme.button.color,
                   ),
                 TextButton(
                   onPressed: _switchAuthMode,
+                  style: ButtonStyle(
+                    padding: MaterialStateProperty.all(
+                      const EdgeInsets.symmetric(vertical: 8, horizontal: 30),
+                    ),
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    textStyle: MaterialStateProperty.all(
+                      TextStyle(
+                        color: Theme.of(context).primaryColor,
+                      ),
+                    ),
+                  ),
                   child: Text(
                       '${_authMode == AuthMode.login ? 'signup' : 'login'} INSTEAD'),
-                  // padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 4),
-                  // materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  // textColor: Theme.of(context).primaryColor,
                 ),
               ],
             ),
